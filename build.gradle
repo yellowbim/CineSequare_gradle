@@ -29,6 +29,23 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // Database
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.4'
+    implementation 'mysql:mysql-connector-java:8.0.22'
+    implementation 'com.zaxxer:HikariCP:3.4.5'
+
+
+    // log4
+//    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+
+    // GSON
+    implementation 'com.google.code.gson:gson:2.8.5'
+
+    // javax.mail
+//    compileOnly 'javax.mail:mail:1.4.7'
+
 }
 
 test {
@@ -39,3 +56,9 @@ bootBuildImage {
     builder = 'paketobuildpacks/builder:tiny'
     environment = ['BP_NATIVE_IMAGE': 'true']
 }
+
+//configurations {
+//    all {
+//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+//    }
+//}
