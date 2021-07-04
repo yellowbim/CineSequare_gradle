@@ -4,32 +4,33 @@
 
     <insert id="signup" parameterType="UserVO">
         /* UserMapper.signup */
-        <selectKey resultType="String" keyProperty="token" order="BEFORE">
-            SELECT (CASE WHEN LENGTH(X.tokenNum) = 1 THEN CONCAT('cineuser-000', X.tokenNum)
-                        WHEN LENGTH(X.tokenNum) = 2 THEN CONCAT('cineuser-00', X.tokenNum)
-                        WHEN LENGTH(X.tokenNum) = 3 THEN CONCAT('cineuser-0', X.tokenNum)
-                        ELSE CONCAT('cineuser-', X.tokenNum)
-                    END ) AS token
-            FROM (
-                SELECT MAX(SUBSTRING(token, 10))+1 AS tokenNum
-                FROM tb_user
-                WHERE token LIKE 'cineuser-%'
-                ) X
+        <selectKey keyProperty="cineToken" resultType="int" order="BEFORE">
+            SELECT ( CASE WHEN LASTVAL(tb_user_seq) = 0 THEN 'cineuser-0001'
+                        WHEN LENGTH(LASTVAL(tb_user_seq)) = 9999 THEN 'can_not_insert'
+                        WHEN LENGTH(NEXTVAL(tb_user_seq)) = 1 THEN CONCAT('cineuser-000', NEXTVAL(tb_user_seq))
+                        WHEN LENGTH(NEXTVAL(tb_user_seq)) = 2 THEN CONCAT('cineuser-00', NEXTVAL(tb_user_seq))
+                        WHEN LENGTH(NEXTVAL(tb_user_seq)) = 3 THEN CONCAT('cineuser-0', NEXTVAL(tb_user_seq))
+                        ELSE CONCAT('cineuser-', NEXTVAL(tb_user_seq))
+                        END ) AS cineToken
+            FROM tb_user
         </selectKey>
-        INSERT INTO tb_user
-        VALUES (#{token}, #{account}, #{password}, #{name})
+        <if test="cineToken != null and !cineToken.equals( 'can_not_insert' )">
+            INSERT INTO tb_user
+            VALUES (#{cineToken}, #{cineToken} #{account}, #{password}, #{name})
+        </if>
     </insert>
 
     <select id="validAccount" parameterType="String" resultType="int">
         /* UserMapper.validAccount */
-        SELECT COUNT(token)
+        SELECT COUNT(cineToken)
         FROM tb_user
         WHERE account = #{param}
     </select>
 
     <select id="getUser" parameterType="UserVO" resultType="UserVO">
         /* UserMapper.getUser */
-        SELECT token
+        SELECT cineToken
+            , apiToken
             , account
             , password
             , name

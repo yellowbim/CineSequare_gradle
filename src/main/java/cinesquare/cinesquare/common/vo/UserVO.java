@@ -5,7 +5,8 @@ import lombok.Data;
 @Data
 public class UserVO {
 
-    private String token;
+    private String cineToken;
+    private String apiToken;
     private String account;
     private String password;
     private String name;
