@@ -4,7 +4,7 @@
 
     <insert id="signup" parameterType="UserVO">
         /* UserMapper.signup */
-        <selectKey keyProperty="cineToken" resultType="int" order="BEFORE">
+        <selectKey keyProperty="cineToken" resultType="String" order="BEFORE">
             SELECT ( CASE WHEN LASTVAL(tb_user_seq) = 999999 THEN 'can_not_insert'
                         WHEN LENGTH(NEXTVAL(tb_user_seq)) = 1 THEN CONCAT('cineuser-00000', NEXTVAL(tb_user_seq))
                         WHEN LENGTH(NEXTVAL(tb_user_seq)) = 2 THEN CONCAT('cineuser-0000', NEXTVAL(tb_user_seq))
@@ -16,7 +16,7 @@
         </selectKey>
         <if test="cineToken != null and !cineToken.equals( 'can_not_insert' )">
             INSERT INTO tb_user
-            VALUES (#{cineToken}, #{cineToken} #{account}, #{password}, #{name})
+            VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{name}, 0)
         </if>
     </insert>
 
