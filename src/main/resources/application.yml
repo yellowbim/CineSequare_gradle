@@ -3,5 +3,30 @@ spring:
     hikari:
       username: root
       password: root1234
-      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy
-      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/arthall?characterEncoding=utf8
+#      driver-class-name: net.sf.log4jdbc.sql.jdbcapi.DriverSpy # log4j2
+      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/cine_square?characterEncoding=utf8&serverTimezone=UTC
+    # mylocal
+#      jdbc-url: jdbc:log4jdbc:mariadb://localhost:3306/cine_square?characterEncoding=UTF-8&serverTimezone=UTC
+
+#logging:
+#  config: classpath:log4j2.yml
+
+  mail:
+    default:
+      encoding: UTF-8
+    host: smtp.gmail.com
+    port: 587
+    username: Ysoomin12@gmail.com
+    password: advfcdrfpknswgdy
+    properties:
+      mail:
+        smtp:
+          auth: true
+          timeout: 5000
+          starttls:
+            enable: true
+
+# MyBatis Configuration
+mybatis:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: cinesquare.cinesquare.vo
