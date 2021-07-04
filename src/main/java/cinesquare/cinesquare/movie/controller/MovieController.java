@@ -17,10 +17,10 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public List<MovieVO> getMovie(@RequestParam String searchWord) throws Exception {
-        List<MovieVO> movieList = movieService.getMovieList(searchWord);
-
-        return movieList;
-    }
+//    @RequestMapping(value = "/search", method = RequestMethod.GET)
+//    public List<MovieVO> getMovie(@RequestParam String searchWord) throws Exception {
+//        List<MovieVO> movieList = movieService.getMovieList(searchWord);
+//
+//        return movieList;
+//    }
 }

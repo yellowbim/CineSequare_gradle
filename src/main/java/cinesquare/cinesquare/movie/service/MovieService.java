@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface MovieService {
 
-    public List<MovieVO> getMovieList(String param) throws Exception;
+//    public List<MovieVO> getMovieList(String param) throws Exception;
 
 }
