@@ -5,15 +5,13 @@ import cinesquare.cinesquare.common.vo.UserVO;
 import cinesquare.cinesquare.user.service.MailService;
 import cinesquare.cinesquare.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/user")
 public class UserController {
 
@@ -32,11 +30,20 @@ public class UserController {
         return resultMap;
     }
 
+    // 소셜 회원가입
+    @RequestMapping(value = "/apiSignup", method = RequestMethod.POST)
+    public Map apiSignup(@RequestBody UserVO param) throws Exception {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("result", userService.apiSignup(param));
+
+        return resultMap;
+    }
+
     // CINE 로그인
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
     public Map signin(@RequestBody UserVO param) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", userService.getUser(param));
+        resultMap.put("result", userService.getUserInfo(param));
 
         return resultMap;
     }
@@ -45,17 +52,16 @@ public class UserController {
     @RequestMapping(value = "/signup/valid", method = RequestMethod.POST)
     public Map signupValid(@RequestBody UserVO param) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", userService.validAccount(param.getAccount()));
+        resultMap.put("result", userService.signupValid(param.getAccount()));
 
         return resultMap;
     }
 
     // 회원가입 메일 전송
     @RequestMapping(value = "/signup/sendmail", method = RequestMethod.POST)
-    public Map sendMailTest(@RequestBody UserVO param) throws Exception {
-        Map<String, String> resultMap = new HashMap<>();
-        MailVO authNumMail = mailService.makeAuthNumMail(param);
-        resultMap.put("result", mailService.sendMail(authNumMail));
+    public Map sendMailTest(@RequestBody UserVO user) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result", mailService.makeAuthNumMail(user));
 
         return resultMap;
     }

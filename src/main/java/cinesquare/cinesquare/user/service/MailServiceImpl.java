@@ -18,7 +18,7 @@ public class MailServiceImpl implements MailService {
     private JavaMailSender javaMailSender;
 
     @Override
-    public String sendMail(MailVO mail) {
+    public String setMailInfo(MailVO mail) {
         String rtnText = "";
 
         try {

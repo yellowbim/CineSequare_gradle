@@ -15,28 +15,44 @@
                         END ) AS cineToken
         </selectKey>
         <if test="cineToken != null and !cineToken.equals( 'can_not_insert' )">
-            INSERT INTO tb_user
-            VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{name}, 0)
+            <if test="apiToken != null and !apiToken.equals('')">
+                INSERT INTO tb_user
+                VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{name}, 0)
+            </if>
         </if>
     </insert>
 
-    <select id="validAccount" parameterType="String" resultType="int">
-        /* UserMapper.validAccount */
+    <select id="validSignup" parameterType="String" resultType="int">
+        /* UserMapper.validSignup */
         SELECT COUNT(cineToken)
         FROM tb_user
         WHERE account = #{param}
     </select>
 
-    <select id="getUser" parameterType="UserVO" resultType="UserVO">
-        /* UserMapper.getUser */
+    <select id="getUserInfo" parameterType="UserVO" resultType="UserVO">
+        /* UserMapper.getUserInfo */
         SELECT cineToken
-            , apiToken
-            , account
-            , password
-            , name
-            , totalWatchTime
+             , apiToken
+             , account
+             , password
+             , name
+             , totalWatchTime
         FROM tb_user
-        WHERE account = #{account}
-        AND password = #{password}
+        WHERE (account = #{account} AND password = #{password})
+           OR (cineToken = #{cineToken} AND apiToken IS NOT NULL)
     </select>
+
+<!--    <insert id="apiSignup" parameterType="UserVO">-->
+<!--        /* UserMapper.apiSignup */-->
+<!--        INSERT INTO tb_user-->
+<!--        VALUES ('cineuser-000011', #{apiToken}, #{account}, #{password}, #{name}, 0)-->
+<!--    </insert>-->
+
+<!--    <select id="last" parameterType="UserVO" resultType="String">-->
+<!--        /* UserMapper.validAccount */-->
+<!--        SELECT cineToken-->
+<!--        FROM tb_user-->
+<!--        ORDER BY cineToken DESC-->
+<!--            LIMIT 1;-->
+<!--    </select>-->
 </mapper>

@@ -4,10 +4,12 @@ import cinesquare.cinesquare.common.vo.UserVO;
 
 public interface UserService {
 
-    public String signup(UserVO param) throws Exception;
+    String signup(UserVO param) throws Exception;
 
-    public boolean validAccount(String param) throws Exception;
+    String apiSignup(UserVO param) throws Exception;
 
-    public UserVO getUser(UserVO param) throws Exception;
+    boolean signupValid(String param) throws Exception;
+
+    UserVO getUserInfo(UserVO param) throws Exception;
 
 }

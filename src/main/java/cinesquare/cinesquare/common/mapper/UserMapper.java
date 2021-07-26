@@ -7,10 +7,13 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface UserMapper {
-
     int signup(UserVO param) throws IllegalAccessException;
 
-    int validAccount(String param) throws IllegalAccessException;
+    int apiSignup(UserVO param) throws IllegalAccessException;
 
-    UserVO getUser(UserVO param) throws IllegalAccessException;
+    String last() throws IllegalAccessException;
+
+    int validSignup(String param) throws IllegalAccessException;
+
+    UserVO getUserInfo(UserVO param) throws IllegalAccessException;
 }
