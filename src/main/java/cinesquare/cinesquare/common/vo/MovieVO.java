@@ -7,11 +7,9 @@ public class MovieVO {
 
     private String movieCd;
     private String movieNm;
-    private String janres;
-    private String directors;
-    private String actors;
-    private String nations;
     private String openDt;
+    private String janres;
+    private String nations;
     private int showTm;
-
+    private String mainImg;
 }

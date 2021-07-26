@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cinesquare.cinesquare.common.mapper.MovieMapper">
-
-<select id="searchMovie" parameterType="String" resultType="MovieVO">
-    <![CDATA[
+    <select id="searchMovie" parameterType="String" resultType="MovieVO">
         /* MovieMapper.searchMovie */
         SELECT movieCd
             , movieNm
-            , janres
-            , directors
-            , actors
-            , nations
             , openDt
+            , janres
+            , nations
             , showTm
+            , content
+            , mainImg
         FROM tb_movie
-        WHERE movieNm LIKE CONCAT('%', #{param}, '%')
-             OR directors LIKE CONCAT('%', #{param}, '%')
-             OR actors LIKE CONCAT('%', #{param}, '%')
-    ]]>
-</select>
+        WHERE REPLACE(movieNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%')
+            OR REPLACE(content, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%')
+            OR movieCd IN (
+                        SELECT movieCd
+                        FROM tb_character_roll
+                        WHERE REPLACE(characterNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%')
+                           OR REPLACE(realNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%'))
+    </select>
 </mapper>

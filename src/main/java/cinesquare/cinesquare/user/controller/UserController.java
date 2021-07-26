@@ -1,6 +1,5 @@
 package cinesquare.cinesquare.user.controller;
 
-import cinesquare.cinesquare.common.vo.MailVO;
 import cinesquare.cinesquare.common.vo.UserVO;
 import cinesquare.cinesquare.user.service.MailService;
 import cinesquare.cinesquare.user.service.UserService;
