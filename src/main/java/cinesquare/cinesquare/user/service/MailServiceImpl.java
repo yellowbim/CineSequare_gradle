@@ -45,19 +45,21 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public MailVO makeAuthNumMail(UserVO param) {
+    public String makeAuthNumMail(UserVO param) {
         MailVO mail = new MailVO();
 
         int authNum = (int) (Math.random() * (999999 - 100000 + 1)) + 100000;
         String content = "[CINESQUARE]\n"
-                + "\n" + param.getName() + "님, 반갑습니다."
+                + "\n반갑습니다."
                 + "\nCINESQUARE 계정 생성을 위한 인증번호는 " + authNum + " 입니다.";
 
         mail.setTitle("[CINESQUARE] 계정생성 인증번호");
         mail.setContent(content);
         mail.setRecieverMail(param.getAccount());
 
-        return mail;
+        String rtnMsg = setMailInfo(mail);
+
+        return rtnMsg;
     }
 
     // 이미지 삽입

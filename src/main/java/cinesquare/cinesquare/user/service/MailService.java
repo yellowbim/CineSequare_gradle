@@ -12,7 +12,7 @@ public interface MailService {
     String setMailInfo(MailVO mail);
 
     // 인증번호 메일
-    MailVO makeAuthNumMail(UserVO param);
+    String makeAuthNumMail(UserVO param);
 
     // 이미지 삽입
 //    public  void setInlineImage(String contentId, String pathToInline) throws MessagingException, IOException;

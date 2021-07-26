@@ -57,8 +57,8 @@ public class UserController {
         return resultMap;
     }
 
-    // 회원가입 메일 전송
-    @RequestMapping(value = "/signup/sendmail", method = RequestMethod.POST)
+    // 회원가입 인증 메일 전송
+    @RequestMapping(value = "/signup/sendAuthMail", method = RequestMethod.POST)
     public Map sendMailTest(@RequestBody UserVO user) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", mailService.makeAuthNumMail(user));
