@@ -32,27 +32,27 @@ public class UserController {
 
     // 소셜 회원가입
     @RequestMapping(value = "/apiSignup", method = RequestMethod.POST)
-    public Map apiSignup(@RequestBody UserVO param) throws Exception {
+    public Map apiSignup(@RequestBody UserVO user) throws Exception {
         Map<String, String> resultMap = new HashMap<>();
-        resultMap.put("result", userService.apiSignup(param));
+        resultMap.put("result", userService.apiSignup(user));
 
         return resultMap;
     }
 
     // CINE 로그인
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
-    public Map signin(@RequestBody UserVO param) throws Exception {
+    public Map signin(@RequestBody UserVO user) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", userService.getUserInfo(param));
+        resultMap.put("result", userService.getUserInfo(user));
 
         return resultMap;
     }
 
     // CINE 계정 중복확인
     @RequestMapping(value = "/signup/valid", method = RequestMethod.POST)
-    public Map signupValid(@RequestBody UserVO param) throws Exception {
+    public Map signupValid(@RequestBody UserVO user) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", userService.signupValid(param.getAccount()));
+        resultMap.put("result", userService.signupValid(user.getAccount()));
 
         return resultMap;
     }
@@ -62,6 +62,15 @@ public class UserController {
     public Map sendMailTest(@RequestBody UserVO user) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", mailService.makeAuthNumMail(user));
+
+        return resultMap;
+    }
+
+    // 회원정보
+    @RequestMapping(value = "/getUserInfo", method = RequestMethod.POST)
+    public Map getUserInfo(@RequestBody UserVO user) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result", userService.getUserInfo(user));
 
         return resultMap;
     }

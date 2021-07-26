@@ -39,20 +39,6 @@
              , totalWatchTime
         FROM tb_user
         WHERE (account = #{account} AND password = #{password})
-           OR (cineToken = #{cineToken} AND apiToken IS NOT NULL)
+           OR cineToken = #{cineToken}
     </select>
-
-<!--    <insert id="apiSignup" parameterType="UserVO">-->
-<!--        /* UserMapper.apiSignup */-->
-<!--        INSERT INTO tb_user-->
-<!--        VALUES ('cineuser-000011', #{apiToken}, #{account}, #{password}, #{name}, 0)-->
-<!--    </insert>-->
-
-<!--    <select id="last" parameterType="UserVO" resultType="String">-->
-<!--        /* UserMapper.validAccount */-->
-<!--        SELECT cineToken-->
-<!--        FROM tb_user-->
-<!--        ORDER BY cineToken DESC-->
-<!--            LIMIT 1;-->
-<!--    </select>-->
 </mapper>
