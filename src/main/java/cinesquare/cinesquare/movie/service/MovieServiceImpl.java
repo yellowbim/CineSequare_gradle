@@ -21,5 +21,14 @@ public class MovieServiceImpl implements MovieService {
         return movieList;
     }
 
+    // 박스오피스 목록
+    @Override
+    public List<MovieVO> getBoxoffice() throws Exception {
+        List<MovieVO> movieList = mapper.getBoxoffice();
+
+        return movieList;
+    }
+
+
 
 }

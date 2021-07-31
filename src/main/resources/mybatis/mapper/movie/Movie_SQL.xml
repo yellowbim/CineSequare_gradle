@@ -20,4 +20,19 @@
                         WHERE REPLACE(characterNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%')
                            OR REPLACE(realNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%'))
     </select>
+
+    <select id="getBoxoffice" parameterType="String" resultType="MovieVO">
+        /* MovieMapper.getBoxoffice */
+        SELECT movieCd
+             , movieNm
+             , openDt
+             , janres
+             , nations
+             , showTm
+             , content
+             , mainImg
+        FROM tb_movie
+        ORDER BY openDt DESC
+        LIMIT 10
+    </select>
 </mapper>

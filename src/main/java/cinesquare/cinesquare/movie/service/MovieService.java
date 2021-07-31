@@ -8,4 +8,6 @@ public interface MovieService {
 
     List<MovieVO> getMovieList(String param) throws Exception;
 
+    List<MovieVO> getBoxoffice() throws Exception;
+
 }

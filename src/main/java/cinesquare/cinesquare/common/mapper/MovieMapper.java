@@ -11,4 +11,6 @@ import java.util.List;
 public interface MovieMapper {
 
     List<MovieVO> searchMovie(String param) throws IllegalAccessException;
+
+    List<MovieVO> getBoxoffice() throws IllegalAccessException;
 }
