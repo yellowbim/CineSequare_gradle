@@ -21,18 +21,16 @@
                            OR REPLACE(realNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%'))
     </select>
 
-    <select id="getBoxoffice" parameterType="String" resultType="MovieVO">
+    <select id="getBoxoffice" parameterType="String" resultType="Map">
         /* MovieMapper.getBoxoffice */
-        SELECT movieCd
+        SELECT reportDt
+             , ranking
+             , movieCd
              , movieNm
-             , openDt
-             , janres
-             , nations
-             , showTm
-             , content
+             , audience
              , mainImg
-        FROM tb_movie
-        ORDER BY openDt DESC
+        FROM tb_daily_boxoffice
+        ORDER BY reportDt DESC, ranking
         LIMIT 10
     </select>
 </mapper>

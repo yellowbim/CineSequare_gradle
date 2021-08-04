@@ -29,7 +29,7 @@ public class MovieController {
     @RequestMapping(value = "/boxoffice", method = RequestMethod.GET)
     public Map getMovie() throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        List<MovieVO> movieList = movieService.getBoxoffice();
+        List<Map> movieList = movieService.getBoxoffice();
         resultMap.put("result", movieList);
 
         return resultMap;

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -23,12 +24,10 @@ public class MovieServiceImpl implements MovieService {
 
     // 박스오피스 목록
     @Override
-    public List<MovieVO> getBoxoffice() throws Exception {
-        List<MovieVO> movieList = mapper.getBoxoffice();
+    public List<Map> getBoxoffice() throws Exception {
+        List<Map> movieList = mapper.getBoxoffice();
 
         return movieList;
     }
-
-
 
 }
