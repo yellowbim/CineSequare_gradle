@@ -1,5 +1,6 @@
 package cinesquare.cinesquare.movie.service;
 
+import cinesquare.cinesquare.common.vo.GradeReviewVO;
 import cinesquare.cinesquare.common.vo.MovieVO;
 
 import java.util.List;
@@ -10,5 +11,9 @@ public interface MovieService {
     List<MovieVO> getMovieList(String param) throws Exception;
 
     List<Map> getBoxoffice() throws Exception;
+
+    MovieVO getMovieInfoDetail(String param) throws Exception;
+
+    boolean updateMovieGrade(GradeReviewVO param) throws Exception;
 
 }

@@ -2,6 +2,8 @@ package cinesquare.cinesquare.common.vo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
+
 @Data
 public class MovieVO {
 
@@ -10,6 +12,9 @@ public class MovieVO {
     private String openDt;
     private String janres;
     private String nations;
-    private int showTm;
+    private String showTm;
+    private String grade;
     private String mainImg;
+    private ArrayList<CharacterVO> characterList;
+
 }

@@ -41,4 +41,70 @@
         WHERE (account = #{account} AND password = #{password})
            OR cineToken = #{cineToken}
     </select>
+
+    <select id="checkMovieGrade" parameterType="GradeReviewVO" resultType="int">
+        /* UserMapper.checkMovieGrade */
+        SELECT count(grade)
+        FROM tb_movie_grade
+        WHERE account = #{account}
+        AND movieCd = #{movieCd}
+    </select>
+
+    <insert id="insertMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.insertMovieGrade */
+        INSERT INTO tb_movie_grade
+        VALUES ( #{account}, #{movieCd}, #{grade} )
+    </insert>
+
+    <update id="updateMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.updateMovieGrade */
+        UPDATE tb_movie_grade
+        SET grade = #{grade}
+        WHERE account = #{account}
+        AND movieCd = #{movieCd}
+    </update>
+
+    <delete id="deleteMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.deleteMovieGrade */
+        DELETE tb_movie_grade
+        WHERE account = #{account}
+        AND movieCd = #{movieCd}
+    </delete>
+
+    <select id="listGradeList" parameterType="UserVO" resultType="Map">
+        /* UserMapper.listGradeList */
+        SELECT grade, count(grade) AS count
+        FROM tb_movie_grade
+        WHERE account = #{account}
+        GROUP BY grade
+    </select>
+
+    <select id="getGradeAndReview" parameterType="GradeReviewVO" resultType="GradeReviewVO">
+        /* UserMapper.getGradeAndReview */
+        SELECT X.account, X.movieCd, X.grade, Y.review
+        FROM tb_movie_grade X
+        JOIN tb_movie_review Y
+        ON ( X.account = Y.account
+            AND X.movieCd = Y.movieCd)
+        WHERE X.account = #{account}
+            AND X.movieCd = #{movieCd}
+    </select>
+
+    <select id="listUserMovieGrade" parameterType="GradeReviewVO" resultType="GradeReviewVO">
+        /* UserMapper.listUserMovieGrade */
+        SELECT X.grade, Y.movieCd, Y.movieNm
+        FROM tb_movie_grade X
+        JOIN tb_movie Y
+        ON X.movieCd = Y.movieCd
+        WHERE X.account = #{account}
+    </select>
+
+    <select id="listUserMovieReview" parameterType="GradeReviewVO" resultType="GradeReviewVO">
+        /* UserMapper.listUserMovieReview */
+        SELECT X.review, Y.movieCd, Y.movieNm
+        FROM tb_movie_review X
+        JOIN tb_movie Y
+        ON X.movieCd = Y.movieCd
+        WHERE X.account = #{account}
+    </select>
 </mapper>
