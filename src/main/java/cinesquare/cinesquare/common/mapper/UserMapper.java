@@ -23,13 +23,19 @@ public interface UserMapper {
 
     UserVO getUserInfo(UserVO param) throws IllegalAccessException;
 
-    int checkMovieGrade(GradeReviewVO param) throws IllegalAccessException;
+    int updateUserInfo(UserVO param) throws IllegalAccessException;
+
+    String checkMovieGrade(GradeReviewVO param) throws IllegalAccessException;
 
     int insertMovieGrade(GradeReviewVO param) throws IllegalAccessException;
 
     int updateMovieGrade(GradeReviewVO param) throws IllegalAccessException;
 
     int deleteMovieGrade(GradeReviewVO param) throws IllegalAccessException;
+
+    int countUpWatchTime(GradeReviewVO param) throws IllegalAccessException;
+
+    int countDownWatchTime(GradeReviewVO param) throws IllegalAccessException;
 
     List<Map<String, String>> listGradeList(UserVO param) throws IllegalAccessException;
 

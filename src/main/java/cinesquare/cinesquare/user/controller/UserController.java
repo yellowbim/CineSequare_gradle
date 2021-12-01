@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.logging.log4j.util.Strings.isEmpty;
+
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/user")
@@ -71,6 +73,15 @@ public class UserController {
     public Map getUserInfo(@RequestBody UserVO param) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
         resultMap.put("result", userService.getUserInfo(param));
+
+        return resultMap;
+    }
+
+    // 회원정보 수정
+    @RequestMapping(value = "/modifyUserInfo", method = RequestMethod.POST)
+    public Map updateUserInfo(@RequestBody UserVO param) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result", userService.updateUserInfo(param));
 
         return resultMap;
     }

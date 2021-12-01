@@ -70,29 +70,28 @@ public class MovieServiceImpl implements MovieService {
         return MovieInfo;
     }
 
-    // 영화 별점 업데이트
+    // 영화 별점 주기
+    // TODO 참고
     @Override
-    public boolean updateMovieGrade(GradeReviewVO param) throws Exception {
-        int processResult;
-        GradeReviewVO tmpParam = new GradeReviewVO();
-        tmpParam = param;
-        tmpParam.setGrade("grade" + param.getGrade().replace(".", "_"));
-        List<Map> check = mapper.checkMovieGrade(tmpParam);
-        if (check.size() == 2) {
-            Map<String,String> paramMap = new HashMap<>();
-            paramMap.put("movieCd", param.getMovieCd());
-            paramMap.put("oldGrade", (String) check.get(0).get("grade"));
-            paramMap.put("oldGradeCount", Long.toString((Long) check.get(0).get("gradeCount")));
-            paramMap.put("newGrade", (String) check.get(1).get("grade"));
-            paramMap.put("newGradeCount", Long.toString((Long) check.get(1).get("gradeCount")));
+    public int updateMovieGrade(GradeReviewVO param, String oldCheck) throws Exception {
+        Map<String, String> tMap = new HashMap<>();
+        tMap.put("movieCd", param.getMovieCd());
+        int oldResult = 1;
+        int newResult = 0;
 
-            processResult = mapper.updateMovieGrade(paramMap);
-        } else {
-            processResult = mapper.insertMovieGrade(param);
+        if (!isEmpty(oldCheck)) {
+            tMap.put("grade", "grade" + oldCheck.replace(".", "_"));
+            oldResult = mapper.countUpMovieGrade(tMap);
         }
 
-        boolean result = processResult > 0 ? true : false;
+        if (!isEmpty(param.getGrade())) {
+            tMap.put("grade", "grade" + param.getGrade().replace(".", "_"));
+            newResult = mapper.countUpMovieGrade(tMap);
+        } else {
+            tMap.put("grade", "grade" + oldCheck.replace(".", "_"));
+            newResult = mapper.countDownMovieGrade(tMap);
+        }
 
-        return result;
+        return oldResult > 0 && newResult > 0 ? 1 : -1;
     }
 }

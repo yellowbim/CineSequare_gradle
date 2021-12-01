@@ -86,29 +86,27 @@
         WHERE X.movieCd = #{movieCd}
     </select>
 
-    <select id="checkMovieGrade" parameterType="GradeReviewVO" resultType="Map">
-        /* MovieMapper.checkMovieGrade */
-        SELECT REPLACE(CONCAT('grade', grade), '.', '_') AS 'grade',count(grade) AS 'gradeCount'
-        FROM tb_movie_grade
-        WHERE account = #{account}
-        AND movieCd = #{movieCd}
-        UNION
-        SELECT #{grade} AS 'grade', ${grade} AS 'gradeCount'
-        FROM tb_grade_report
-        WHERE movieCd = #{movieCd}
-    </select>
-
-    <insert id="insertMovieGrade" parameterType="GradeReviewVO">
-        /* MovieMapper.insertMovieGrade */
-        INSERT INTO tb_grade_report ( movieCd, ${grade})
-        VALUES ( #{movieCd}, 1 )
-    </insert>
-
-    <update id="updateMovieGrade" parameterType="Map">
-        /* MovieMapper.updateMovieGrade */
+    <update id="countUpMovieGrade" parameterType="Map">
+        /* MovieMapper.countUpMovieGrade */
+        <selectKey keyProperty="cnt" resultType="java.lang.Integer" order="BEFORE">
+            SELECT ${grade} AS cnt
+            FROM tb_grade_report
+            WHERE movieCd = #{movieCd}
+        </selectKey>
         UPDATE tb_grade_report
-        SET ${oldGrade} = ${oldGradecCount}-1
-            , ${newGrade} = ${newGradeCount}+1
+        SET ${grade} = #{cnt} + 1
+        WHERE movieCd = #{movieCd}
+    </update>
+
+    <update id="countDownMovieGrade" parameterType="Map">
+        /* MovieMapper.countDownMovieGrade */
+        <selectKey keyProperty="cnt" resultType="java.lang.Integer" order="BEFORE">
+            SELECT ${grade} AS cnt
+            FROM tb_grade_report
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_grade_report
+        SET ${grade} = #{cnt} - 1
         WHERE movieCd = #{movieCd}
     </update>
 </mapper>

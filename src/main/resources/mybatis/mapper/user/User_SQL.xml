@@ -17,7 +17,7 @@
         <if test="cineToken != null and !cineToken.equals( 'can_not_insert' )">
             <if test="apiToken != null and !apiToken.equals('')">
                 INSERT INTO tb_user
-                VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{name}, 0)
+                VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{userName}, 0)
             </if>
         </if>
     </insert>
@@ -35,25 +35,38 @@
              , apiToken
              , account
              , password
-             , name
+             , userName
              , totalWatchTime
         FROM tb_user
         WHERE (account = #{account} AND password = #{password})
            OR cineToken = #{cineToken}
     </select>
 
-    <select id="checkMovieGrade" parameterType="GradeReviewVO" resultType="int">
+    <update id="updateUserInfo" parameterType="UserVO">
+        /* UserMapper.updateUserInfo */
+        UPDATE tb_user
+        SET userName = #{userName}
+        WHERE (account = #{account} AND password = #{password})
+           OR cineToken = #{cineToken}
+    </update>
+
+    <select id="checkMovieGrade" parameterType="GradeReviewVO" resultType="String">
         /* UserMapper.checkMovieGrade */
-        SELECT count(grade)
-        FROM tb_movie_grade
-        WHERE account = #{account}
+        SELECT grade
+        FROM tb_movie_grade X
+        JOIN tb_user Y
+        ON X.account = Y.account
+        WHERE Y.cineToken = #{cineToken}
         AND movieCd = #{movieCd}
     </select>
 
     <insert id="insertMovieGrade" parameterType="GradeReviewVO">
         /* UserMapper.insertMovieGrade */
         INSERT INTO tb_movie_grade
-        VALUES ( #{account}, #{movieCd}, #{grade} )
+        VALUES ( account, #{movieCd}, #{grade} )
+        SELECT account
+        FROM tb_user
+        WHERE cineToken = #{cineToken}
     </insert>
 
     <update id="updateMovieGrade" parameterType="GradeReviewVO">
@@ -70,6 +83,34 @@
         WHERE account = #{account}
         AND movieCd = #{movieCd}
     </delete>
+
+    <update id="countUpWatchTime" parameterType="GradeReviewVO">
+        /* UserMapper.countUpWatchTime */
+        <selectKey keyProperty="showTm" resultType="java.lang.Integer" order="BEFORE">
+            SELECT showTm
+            FROM tb_movie
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_user
+        SET totalWatchTime = #{totalWatchTime} + showTm
+        SELECT totalWatchTime
+        WHERE (account = #{account} AND password = #{password})
+            OR cineToken = #{cineToken}
+    </update>
+
+    <update id="countDownWatchTime" parameterType="GradeReviewVO">
+        /* UserMapper.countDownWatchTime */
+        <selectKey keyProperty="showTm" resultType="java.lang.Integer" order="BEFORE">
+            SELECT showTm
+            FROM tb_movie
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_user
+        SET totalWatchTime = #{totalWatchTime} - showTm
+        SELECT totalWatchTime
+        WHERE (account = #{account} AND password = #{password})
+            OR cineToken = #{cineToken}
+    </update>
 
     <select id="listGradeList" parameterType="UserVO" resultType="Map">
         /* UserMapper.listGradeList */
