@@ -1,7 +1,6 @@
 package cinesquare.cinesquare.common.mapper;
 
 import cinesquare.cinesquare.common.vo.GradeReviewVO;
-import cinesquare.cinesquare.common.vo.UserContentsVO;
 import cinesquare.cinesquare.common.vo.UserVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

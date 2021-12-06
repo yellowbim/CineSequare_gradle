@@ -142,6 +142,9 @@ public class UserServiceImpl implements UserService {
             processResult = userMapper.countDownWatchTime(param);
         }
         // 새로 부여한 별점이 0점 X -> 시청시간 변경 없음
+        else {
+            processResult = 1;
+        }
 
         return processResult > 0 ? true : false;
     }
