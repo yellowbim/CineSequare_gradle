@@ -86,8 +86,8 @@
         WHERE X.movieCd = #{movieCd}
     </select>
 
-    <update id="countUpMovieGrade" parameterType="Map">
-        /* MovieMapper.countUpMovieGrade */
+    <update id="countUpMovieGradeReport" parameterType="Map">
+        /* MovieMapper.countUpMovieGradeReport */
         <selectKey keyProperty="cnt" resultType="java.lang.Integer" order="BEFORE">
             SELECT ${grade} AS cnt
             FROM tb_grade_report
@@ -98,8 +98,8 @@
         WHERE movieCd = #{movieCd}
     </update>
 
-    <update id="countDownMovieGrade" parameterType="Map">
-        /* MovieMapper.countDownMovieGrade */
+    <update id="countDownMovieGradeReport" parameterType="Map">
+        /* MovieMapper.countDownMovieGradeReport */
         <selectKey keyProperty="cnt" resultType="java.lang.Integer" order="BEFORE">
             SELECT ${grade} AS cnt
             FROM tb_grade_report

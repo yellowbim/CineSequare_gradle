@@ -28,7 +28,7 @@ public interface MovieMapper {
 
     String getMovieGrade(String param) throws IllegalAccessException;
 
-    int countUpMovieGrade(Map param) throws IllegalAccessException;
+    int countUpMovieGradeReport(Map param) throws IllegalAccessException;
 
-    int countDownMovieGrade(Map param) throws IllegalAccessException;
+    int countDownMovieGradeReport(Map param) throws IllegalAccessException;
 }

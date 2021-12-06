@@ -8,7 +8,6 @@ import cinesquare.cinesquare.movie.service.MovieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -78,81 +77,94 @@ public class UserServiceImpl implements UserService {
     // 별점 주기
     @Override
     public Boolean selectMovieGrade(GradeReviewVO param) throws Exception {
+        Boolean allProcessResult = false;
         // 기존에 몇점을 주었는가
         String oldGrade = userMapper.checkMovieGrade(param);
 
-        // 사용자별 영화 점수 부여, 변경, 삭제 ---- 이거만 하면 됨  (movieService 관련 코드 있음)
-        Boolean allProcessResult = userJudgeMovieGrade(param, oldGrade) ? true : false;
+        // 기존 시청시간
+        String oldTotalWatchTime = userMapper.checkTotalWatchTime(param);
 
-        if (allProcessResult) {
-            // 영화별 전체 사용자의 점수  ---- 완료
-            allProcessResult = updateMovieGradeReport(param, oldGrade) ? true : false;
+        if (!isEmpty(oldTotalWatchTime)) {
+            param.setTotalWatchTime(Integer.parseInt(oldTotalWatchTime));
+
+            // 사용자별 영화 점수 부여, 변경, 삭제 ---- 이거만 하면 됨  (movieService 관련 코드 있음)
+            allProcessResult = userJudgeMovieGrade(param, oldGrade) ? true : false;
 
             if (allProcessResult) {
-                // 사용자별 총 시청 시간  ---- 완료
-                allProcessResult = changeUserWatchTime(param, oldGrade) ? true : false;
-                if (!allProcessResult) {
-                    System.out.println("별점 오류3");
+                // 영화별 전체 사용자의 점수  ---- 완료
+                allProcessResult = movieService.updateMovieGradeReport(param, oldGrade) ? true : false;
+
+                if (allProcessResult) {
+                    // 사용자별 총 시청 시간  ---- 완료
+                    allProcessResult = changeUserWatchTime(param, oldGrade) ? true : false;
+                    if (!allProcessResult) {
+                        System.out.println("별점 오류3");
+                    }
+                } else {
+                    System.out.println("별점 오류2");
                 }
             } else {
-                System.out.println("별점 오류2");
+                System.out.println("별점 오류1");
             }
-        } else {
-            System.out.println("별점 오류1");
         }
 
         return allProcessResult;
     }
 
     // TODO 개인별 영화 점수 부여, 삭제, 변경
-    private Boolean userJudgeMovieGrade(GradeReviewVO param, String oldGrade) throws Exception {
+    @Override
+    public Boolean userJudgeMovieGrade(GradeReviewVO param, String oldGrade) throws Exception {
         int processResult = -1;
 
         // 새로 점수 부여
         if (isEmpty(oldGrade)) {
-
+            processResult = userMapper.insertUserMovieGrade(param);
         }
         // 새로 준 점수가 0점 -> old를 삭제
         else if("0".equals(param.getGrade())) {
-
+            processResult = userMapper.insertUserMovieGrade(param);
         }
         // old를 삭제하고 새로운 것 insert
         else {
-
-        }
-
-        return processResult > 0 ? true : false;
-    }
-
-    // 영화별 전체 점수 기록 업데이트
-    private Boolean updateMovieGradeReport(GradeReviewVO param, String oldGrade) throws Exception {
-        int processResult = -1;
-
-        Map pMap = new HashMap();
-        pMap.put("movieCd", param.getMovieCd());
-        pMap.put("grade", param.getGrade());
-
-        // insert, 새로 점수 부여
-        if (isEmpty(oldGrade)) {
-            processResult = movieMapper.countUpMovieGrade(pMap);
-        }
-        // delete, 새로 준 점수가 0점 -> 삭제
-        else if("0".equals(param.getGrade())) {
-            processResult = movieMapper.countDownMovieGrade(pMap);
-        }
-        // update 이전과 다른 점수 부여(같은 점수여도 업데이트)
-        else {
-            processResult = movieMapper.countDownMovieGrade(pMap);
+            processResult = userMapper.deleteUserMovieGrade(param);
             if (processResult > 0 ? true : false) {
-                processResult = movieMapper.countUpMovieGrade(pMap);
+                processResult = userMapper.insertUserMovieGrade(param);
             }
         }
 
         return processResult > 0 ? true : false;
     }
 
+//    // 영화 별점 주기
+//    public Boolean updateUserMovieGrade(GradeReviewVO param, String oldCheck) throws Exception {
+//        int processResult = -1;
+//
+//        Map<String, String> tMap = new HashMap<>();
+//        tMap.put("movieCd", param.getMovieCd());
+//        int oldResult = 1;
+//        int newResult = 0;
+//
+//        if (!isEmpty(oldCheck)) {
+//            tMap.put("grade", "grade" + oldCheck.replace(".", "_"));
+//            oldResult = userMapper.countUpMovieGrade(tMap);
+//        }
+//
+//        if (!isEmpty(param.getGrade())) {
+//            tMap.put("grade", "grade" + param.getGrade().replace(".", "_"));
+//            newResult = userMapper.countUpMovieGrade(tMap);
+//        } else {
+//            tMap.put("grade", "grade" + oldCheck.replace(".", "_"));
+//            newResult = userMapper.countDownMovieGrade(tMap);
+//        }
+//
+////        return oldResult > 0 && newResult > 0 ? 1 : -1;
+//
+//        return processResult > 0 ? true : false;
+//    }
+
     // 시청시간 업데이트
-    private Boolean changeUserWatchTime(GradeReviewVO param, String oldGrade) throws Exception {
+    @Override
+    public Boolean changeUserWatchTime(GradeReviewVO param, String oldGrade) throws Exception {
         int processResult = -1;
 
         // 시청시간 올리기

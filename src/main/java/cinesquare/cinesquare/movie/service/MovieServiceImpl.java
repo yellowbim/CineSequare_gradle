@@ -18,12 +18,12 @@ import static org.apache.logging.log4j.util.Strings.isEmpty;
 public class MovieServiceImpl implements MovieService {
 
     @Autowired
-    private MovieMapper mapper;
+    private MovieMapper movieMapper;
 
     // 영화 목록
     @Override
     public List<MovieVO> getMovieList(String param) throws Exception {
-        List<MovieVO> movieList = mapper.searchMovie(param);
+        List<MovieVO> movieList = movieMapper.searchMovie(param);
 
         return movieList;
     }
@@ -31,7 +31,7 @@ public class MovieServiceImpl implements MovieService {
     // 박스오피스 목록
     @Override
     public List<Map> getBoxoffice() throws Exception {
-        List<Map> movieList = mapper.getBoxoffice();
+        List<Map> movieList = movieMapper.getBoxoffice();
 
         return movieList;
     }
@@ -39,11 +39,11 @@ public class MovieServiceImpl implements MovieService {
     // 영화 상세 정보
     @Override
     public MovieVO getMovieInfoDetail(String movieCd) throws Exception {
-        MovieVO MovieInfo = mapper.getMovieInfoDetail(movieCd);
+        MovieVO MovieInfo = movieMapper.getMovieInfoDetail(movieCd);
 
         // 장르
         if (!isEmpty(MovieInfo.getJanres())) {
-            ArrayList<String> janreList = mapper.listJanres(MovieInfo.getJanres());
+            ArrayList<String> janreList = movieMapper.listJanres(MovieInfo.getJanres());
             String janres = "";
 
             for (int i=0; i<janreList.size() ; i++) {
@@ -56,11 +56,11 @@ public class MovieServiceImpl implements MovieService {
         }
 
         // 캐릭터
-        ArrayList<CharacterVO> characterList = mapper.listCharacter(movieCd);
+        ArrayList<CharacterVO> characterList = movieMapper.listCharacter(movieCd);
         MovieInfo.setCharacterList(characterList);
 
         // 평균 별점
-        String grade = mapper.getMovieGrade(movieCd);
+        String grade = movieMapper.getMovieGrade(movieCd);
         if (!isEmpty(grade)) {
             double tmp = Float.valueOf(grade) / 10.0;
             grade = String.valueOf(tmp * 10);
@@ -70,28 +70,35 @@ public class MovieServiceImpl implements MovieService {
         return MovieInfo;
     }
 
-    // 영화 별점 주기
-    // TODO 참고
+    // 영화별 전체 점수 기록 업데이트
     @Override
-    public int updateMovieGrade(GradeReviewVO param, String oldCheck) throws Exception {
-        Map<String, String> tMap = new HashMap<>();
-        tMap.put("movieCd", param.getMovieCd());
-        int oldResult = 1;
-        int newResult = 0;
+    public Boolean updateMovieGradeReport(GradeReviewVO param, String oldGrade) throws Exception {
+        int processResult = -1;
 
-        if (!isEmpty(oldCheck)) {
-            tMap.put("grade", "grade" + oldCheck.replace(".", "_"));
-            oldResult = mapper.countUpMovieGrade(tMap);
+        Map pMap = new HashMap();
+        pMap.put("movieCd", param.getMovieCd());
+
+        // insert, 새로 점수 부여
+        if (isEmpty(oldGrade)) {
+            pMap.put("grade", "grade" + param.getGrade().replace(".", "_"));
+            processResult = movieMapper.countUpMovieGradeReport(pMap);
+        }
+        // delete, 새로 준 점수가 0점 -> 삭제
+        else if("0".equals(param.getGrade())) {
+            pMap.put("grade", "grade" + oldGrade.replace(".", "_"));
+            processResult = movieMapper.countDownMovieGradeReport(pMap);
+        }
+        // update 이전과 다른 점수 부여(같은 점수여도 업데이트)
+        else {
+            pMap.put("grade", "grade" + oldGrade.replace(".", "_"));
+            processResult = movieMapper.countDownMovieGradeReport(pMap);
+
+            if (processResult > 0 ? true : false) {
+                pMap.put("grade", "grade" + param.getGrade().replace(".", "_"));
+                processResult = movieMapper.countUpMovieGradeReport(pMap);
+            }
         }
 
-        if (!isEmpty(param.getGrade())) {
-            tMap.put("grade", "grade" + param.getGrade().replace(".", "_"));
-            newResult = mapper.countUpMovieGrade(tMap);
-        } else {
-            tMap.put("grade", "grade" + oldCheck.replace(".", "_"));
-            newResult = mapper.countDownMovieGrade(tMap);
-        }
-
-        return oldResult > 0 && newResult > 0 ? 1 : -1;
+        return processResult > 0 ? true : false;
     }
 }

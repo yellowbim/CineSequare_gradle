@@ -22,6 +22,10 @@ public interface UserService {
 
     List<Map<String, String>> listGradeList(UserVO param) throws Exception;
 
+    Boolean userJudgeMovieGrade(GradeReviewVO param, String oldCheck) throws Exception;
+
+    Boolean changeUserWatchTime(GradeReviewVO param, String oldGrade) throws Exception;
+
     GradeReviewVO getGradeAndReview(GradeReviewVO param) throws Exception;
 
     List<GradeReviewVO> listUserMovieGrade(UserVO param) throws Exception;

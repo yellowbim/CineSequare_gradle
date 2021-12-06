@@ -6,6 +6,9 @@ import lombok.Data;
 public class GradeReviewVO {
 
     private String account;
+    private String password;
+    private int totalWatchTime;
+    private int showTm;
     private String cineToken;
     private String movieCd;
     private String movieNm;

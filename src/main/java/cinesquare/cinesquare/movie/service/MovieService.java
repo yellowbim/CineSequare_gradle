@@ -14,6 +14,5 @@ public interface MovieService {
 
     MovieVO getMovieInfoDetail(String param) throws Exception;
 
-    int updateMovieGrade(GradeReviewVO param, String oldCheck) throws Exception;
-
+    Boolean updateMovieGradeReport(GradeReviewVO param, String oldGrade) throws Exception;
 }

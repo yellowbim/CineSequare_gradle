@@ -56,30 +56,49 @@
         FROM tb_movie_grade X
         JOIN tb_user Y
         ON X.account = Y.account
-        WHERE Y.cineToken = #{cineToken}
-        AND movieCd = #{movieCd}
+        WHERE X.movieCd = #{movieCd}
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Y.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Y.account = #{account} AND Y.password = #{password}
+            </otherwise>
+        </choose>
     </select>
 
-    <insert id="insertMovieGrade" parameterType="GradeReviewVO">
-        /* UserMapper.insertMovieGrade */
-        INSERT INTO tb_movie_grade
-        VALUES ( account, #{movieCd}, #{grade} )
-        SELECT account
+    <select id="checkTotalWatchTime" parameterType="GradeReviewVO" resultType="String">
+        /* UserMapper.checkTotalWatchTime */
+        SELECT totalWatchTime
         FROM tb_user
-        WHERE cineToken = #{cineToken}
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND account = #{account} AND password = #{password}
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insertUserMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.insertUserMovieGrade */
+        INSERT INTO tb_movie_grade
+        VALUES ( #{account}, #{movieCd}, #{grade} )
     </insert>
 
-    <update id="updateMovieGrade" parameterType="GradeReviewVO">
-        /* UserMapper.updateMovieGrade */
+    <update id="updateUserMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.updateUserMovieGrade */
         UPDATE tb_movie_grade
         SET grade = #{grade}
         WHERE account = #{account}
         AND movieCd = #{movieCd}
     </update>
 
-    <delete id="deleteMovieGrade" parameterType="GradeReviewVO">
-        /* UserMapper.deleteMovieGrade */
-        DELETE tb_movie_grade
+    <delete id="deleteUserMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.deleteUserMovieGrade */
+        DELETE FROM tb_movie_grade
         WHERE account = #{account}
         AND movieCd = #{movieCd}
     </delete>
@@ -92,10 +111,16 @@
             WHERE movieCd = #{movieCd}
         </selectKey>
         UPDATE tb_user
-        SET totalWatchTime = #{totalWatchTime} + showTm
-        SELECT totalWatchTime
-        WHERE (account = #{account} AND password = #{password})
-            OR cineToken = #{cineToken}
+        SET totalWatchTime = #{totalWatchTime} + #{showTm}
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND account = #{account} AND password = #{password}
+            </otherwise>
+        </choose>
     </update>
 
     <update id="countDownWatchTime" parameterType="GradeReviewVO">
@@ -106,10 +131,16 @@
             WHERE movieCd = #{movieCd}
         </selectKey>
         UPDATE tb_user
-        SET totalWatchTime = #{totalWatchTime} - showTm
-        SELECT totalWatchTime
-        WHERE (account = #{account} AND password = #{password})
-            OR cineToken = #{cineToken}
+        SET totalWatchTime = #{totalWatchTime} - #{showTm}
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND account = #{account} AND password = #{password}
+            </otherwise>
+        </choose>
     </update>
 
     <select id="listGradeList" parameterType="UserVO" resultType="Map">
