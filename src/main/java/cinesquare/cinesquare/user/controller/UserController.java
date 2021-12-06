@@ -89,8 +89,18 @@ public class UserController {
     // 별점 주기(수정, 삭제)
     @RequestMapping(value = "/selectMovieGrade", method = RequestMethod.POST)
     public Map selectMovieGrade(@RequestBody GradeReviewVO param) throws Exception {
+        Boolean processResult = false;
+        
+        // 해당 유저가 존재한다는 전제 하에 프로세스 진행
+        if (!isEmpty(param.getGrade()) && !isEmpty(param.getMovieCd())) {
+            if (!isEmpty(param.getCineToken())
+                    || (!isEmpty(param.getAccount()) && !isEmpty(param.getPassword()))) {
+                processResult = userService.selectMovieGrade(param);
+            }
+        }
+
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", userService.selectMovieGrade(param));
+        resultMap.put("result", processResult);
 
         return resultMap;
     }

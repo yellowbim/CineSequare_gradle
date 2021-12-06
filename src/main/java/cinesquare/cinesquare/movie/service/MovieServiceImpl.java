@@ -78,17 +78,17 @@ public class MovieServiceImpl implements MovieService {
         Map pMap = new HashMap();
         pMap.put("movieCd", param.getMovieCd());
 
-        // insert, 새로 점수 부여
+        // 별점 부여 기록 없음 -> 새로운 별점 countUp
         if (isEmpty(oldGrade)) {
             pMap.put("grade", "grade" + param.getGrade().replace(".", "_"));
             processResult = movieMapper.countUpMovieGradeReport(pMap);
         }
-        // delete, 새로 준 점수가 0점 -> 삭제
+        // 새로 부여한 별점이 0점 -> 기존 별점 countDown
         else if("0".equals(param.getGrade())) {
             pMap.put("grade", "grade" + oldGrade.replace(".", "_"));
             processResult = movieMapper.countDownMovieGradeReport(pMap);
         }
-        // update 이전과 다른 점수 부여(같은 점수여도 업데이트)
+        // 새로 부여한 별점이 0점 X -> 기존 별점 countDown && 새로운 별점 countUp
         else {
             pMap.put("grade", "grade" + oldGrade.replace(".", "_"));
             processResult = movieMapper.countDownMovieGradeReport(pMap);

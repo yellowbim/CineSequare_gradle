@@ -27,7 +27,7 @@ public interface UserMapper {
 
     String checkMovieGrade(GradeReviewVO param) throws IllegalAccessException;
 
-    String checkTotalWatchTime(GradeReviewVO param) throws IllegalAccessException;
+    int checkTotalWatchTime(GradeReviewVO param) throws IllegalAccessException;
 
     int insertUserMovieGrade(GradeReviewVO param) throws IllegalAccessException;
 
