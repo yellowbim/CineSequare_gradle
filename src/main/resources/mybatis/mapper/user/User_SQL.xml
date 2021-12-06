@@ -146,8 +146,17 @@
     <select id="listGradeList" parameterType="UserVO" resultType="Map">
         /* UserMapper.listGradeList */
         SELECT grade, count(grade) AS count
-        FROM tb_movie_grade
-        WHERE account = #{account}
+        FROM tb_movie_grade X
+        JOIN tb_user Y
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Y.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Y.account = #{account}
+            </otherwise>
+        </choose>
         GROUP BY grade
     </select>
 
@@ -156,10 +165,19 @@
         SELECT X.account, X.movieCd, X.grade, Y.review
         FROM tb_movie_grade X
         JOIN tb_movie_review Y
-        ON ( X.account = Y.account
-            AND X.movieCd = Y.movieCd)
-        WHERE X.account = #{account}
-            AND X.movieCd = #{movieCd}
+        ON X.account = Y.account
+        AND X.movieCd = Y.movieCd
+        JOIN tb_user Z
+        ON X.account = Z.account
+        WHERE X.movieCd = #{movieCd}
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Z.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Z.account = #{account}
+            </otherwise>
+        </choose>
     </select>
 
     <select id="listUserMovieGrade" parameterType="GradeReviewVO" resultType="GradeReviewVO">
@@ -168,7 +186,17 @@
         FROM tb_movie_grade X
         JOIN tb_movie Y
         ON X.movieCd = Y.movieCd
-        WHERE X.account = #{account}
+        JOIN tb_user Z
+        ON X.account = Z.account
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Z.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Z.account = #{account}
+            </otherwise>
+        </choose>
     </select>
 
     <select id="listUserMovieReview" parameterType="GradeReviewVO" resultType="GradeReviewVO">
@@ -177,6 +205,16 @@
         FROM tb_movie_review X
         JOIN tb_movie Y
         ON X.movieCd = Y.movieCd
-        WHERE X.account = #{account}
+        JOIN tb_user Z
+        ON X.account = Z.account
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Z.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Z.account = #{account}
+            </otherwise>
+        </choose>
     </select>
 </mapper>
