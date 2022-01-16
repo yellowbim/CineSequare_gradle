@@ -63,7 +63,13 @@ public class UserController {
     @RequestMapping(value = "/signup/sendAuthMail", method = RequestMethod.POST)
     public Map sendMailTest(@RequestBody UserVO param) throws Exception {
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("result", mailService.makeAuthNumMail(param));
+
+        String authNum = mailService.makeRandomNum();
+        String result = mailService.makeAuthNumMail(param, authNum);
+        String code = result.equals("success") ? authNum : "";
+
+        resultMap.put("result", result);
+        resultMap.put("code", code);
 
         return resultMap;
     }
