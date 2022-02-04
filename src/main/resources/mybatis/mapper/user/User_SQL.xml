@@ -14,11 +14,9 @@
                         ELSE CONCAT('cineuser-', NEXTVAL(tb_user_seq))
                         END ) AS cineToken
         </selectKey>
-        <if test="cineToken != null and !cineToken.equals( 'can_not_insert' )">
-            <if test="apiToken != null and !apiToken.equals('')">
-                INSERT INTO tb_user
-                VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{userName}, 0)
-            </if>
+        <if test="cineToken != null and !cineToken.equals( 'can_not_insert' ) or apiToken != null and !apiToken.equals('')">
+            INSERT INTO tb_user
+            VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{userName}, 0)
         </if>
     </insert>
 
@@ -147,10 +145,11 @@
         /* UserMapper.listGradeList */
         SELECT grade, count(grade) AS count
         FROM tb_movie_grade X
-        JOIN tb_user Y
+        INNER JOIN tb_user Y
+                ON X.account = Y.account
         WHERE 1=1
         <choose>
-            <when test="cineToken != null and !cineToken.equals('')">
+            <when test="cineToken != null and cineToken != ''">
                 AND Y.cineToken = #{cineToken}
             </when>
             <otherwise>
@@ -162,22 +161,47 @@
 
     <select id="getGradeAndReview" parameterType="GradeReviewVO" resultType="GradeReviewVO">
         /* UserMapper.getGradeAndReview */
-        SELECT X.account, X.movieCd, X.grade, Y.review
-        FROM tb_movie_grade X
-        JOIN tb_movie_review Y
-        ON X.account = Y.account
-        AND X.movieCd = Y.movieCd
-        JOIN tb_user Z
-        ON X.account = Z.account
-        WHERE X.movieCd = #{movieCd}
-        <choose>
-            <when test="cineToken != null and !cineToken.equals('')">
-                AND Z.cineToken = #{cineToken}
-            </when>
-            <otherwise>
-                AND Z.account = #{account}
-            </otherwise>
-        </choose>
+        SELECT
+            AA.account
+            , AA.movieCd
+            , IF( EXISTS (
+                    SELECT *
+                    FROM tb_movie_grade A
+                    INNER JOIN tb_user B
+                            ON A.account = B.account
+                    WHERE A.movieCd = #{movieCd}
+                            <choose>
+                                <when test="cineToken != null and cineToken != ''">
+                                    AND B.cineToken= #{cineToken}
+                                </when>
+                                <otherwise>
+                                    AND B.account= #{account}
+                                </otherwise>
+                            </choose>
+                    ) = 1, BB.grade, 0) AS grade
+            , '' AS review
+            , AA.movieNm
+        FROM (
+                SELECT
+                X.account
+                , Y.movieCd AS movieCd
+                , '' AS review
+                , Y.movieNm
+                FROM tb_user X, tb_movie Y
+                WHERE Y.movieCd  = #{movieCd}
+                <choose>
+                    <when test="cineToken != null and cineToken != ''">
+                        AND X.cineToken = #{cineToken}
+                    </when>
+                    <otherwise>
+                        AND X.account = #{account}
+                    </otherwise>
+                </choose>
+            ) AA
+        LEFT OUTER JOIN tb_movie_grade BB
+                    ON AA.account = BB.account
+                    AND AA.movieCd = BB.movieCd
+        ;
     </select>
 
     <select id="listUserMovieGrade" parameterType="GradeReviewVO" resultType="GradeReviewVO">

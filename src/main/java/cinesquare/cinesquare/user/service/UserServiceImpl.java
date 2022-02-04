@@ -159,8 +159,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public GradeReviewVO getGradeAndReview(GradeReviewVO param) throws Exception {
         GradeReviewVO movieGradeAndReview = userMapper.getGradeAndReview(param);
-        String movieNm = movieMapper.getSimpleMovieInfo(param.getMovieCd()).getMovieNm();
-        movieGradeAndReview.setMovieNm(movieNm);
+//        String movieNm = movieMapper.getSimpleMovieInfo(param.getMovieCd()).getMovieNm();
+//        movieGradeAndReview.setMovieNm(movieNm);
         
         return movieGradeAndReview;
     }
