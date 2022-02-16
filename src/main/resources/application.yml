@@ -9,7 +9,7 @@ spring:
 #      jdbc-url: jdbc:log4jdbc:mysql://localhost:3306/cine_square?characterEncoding=utf8&serverTimezone=UTC
     # docker 배포
       jdbc-url: jdbc:log4jdbc:mysql://172.17.0.2:3306/cine_square?characterEncoding=utf8&serverTimezone=UTC
-    # mylocal
+    # mylocal webhook test
 #      jdbc-url: jdbc:log4jdbc:mariadb://localhost:3306/cine_square?characterEncoding=UTF-8&serverTimezone=UTC
 
 #logging:
