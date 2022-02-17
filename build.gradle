@@ -10,6 +10,19 @@ group = 'cinesquare'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+bootWar {
+    archiveBaseName = 'ROOT' // <--war 패키징 시 이름 설정
+    archiveFileName = 'ROOT.war' //<--war 패키징 시 이름 설정
+    archiveVersion = ""
+}
+
+war {
+    archiveFileName = "ROOT.war"
+}
+
+bootWar.enabled = true
+war.enabled = true
+
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
