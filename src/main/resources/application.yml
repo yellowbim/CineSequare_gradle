@@ -12,8 +12,7 @@ spring:
     # mylocal
 #      jdbc-url: jdbc:log4jdbc:mariadb://localhost:3306/cine_square?characterEncoding=UTF-8&serverTimezone=UTC
 
-server:
-  port: 9096
+
 #logging:
 #  config: classpath:log4j2.yml
 
@@ -31,6 +30,9 @@ server:
           timeout: 5000
           starttls:
             enable: true
+
+server:
+  port: 9096
 
 # MyBatis Configuration
 mybatis:
