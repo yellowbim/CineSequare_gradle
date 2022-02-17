@@ -24,6 +24,15 @@ public class UserController {
     private MailService mailService;
 
     // CINE 회원가입
+    @RequestMapping(value = "/health", method = RequestMethod.POST)
+    public Map hi() throws Exception {
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("result", "I'm alive");
+
+        return resultMap;
+    }
+
+    // CINE 회원가입
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public Map signup(@RequestBody UserVO param) throws Exception {
         Map<String, String> resultMap = new HashMap<>();
