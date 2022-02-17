@@ -1,22 +1,112 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cinesquare.cinesquare.common.mapper.MovieMapper">
+    <select id="getSimpleMovieInfo" parameterType="String" resultType="MovieVO">
+        /* MovieMapper.getSimpleMovieInfo */
+        SELECT X.movieCd
+             , X.movieNm
+             , X.showTm
+        FROM tb_movie X
+        WHERE X.movieCd = #{movieCd}
+    </select>
 
-<select id="searchMovie" parameterType="String" resultType="MovieVO">
-    <![CDATA[
+    <select id="searchMovie" parameterType="String" resultType="MovieVO">
         /* MovieMapper.searchMovie */
-        SELECT movieCd
-            , movieNm
-            , janres
-            , directors
-            , actors
-            , nations
-            , openDt
-            , showTm
-        FROM tb_movie
-        WHERE movieNm LIKE CONCAT('%', #{param}, '%')
-             OR directors LIKE CONCAT('%', #{param}, '%')
-             OR actors LIKE CONCAT('%', #{param}, '%')
-    ]]>
-</select>
+        SELECT X.movieCd
+            , X.movieNm
+            , X.openDt
+            , Y.nationNm AS nations
+            , X.showTm
+            , X.content
+            , X.mainImg
+        FROM tb_movie X
+        JOIN tb_movie_nations Y
+        ON X.nations = Y.nationCd
+        WHERE REPLACE(movieNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%')
+            OR movieCd IN (
+                        SELECT movieCd
+                        FROM tb_character_roll
+                        WHERE REPLACE(characterNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%')
+                           OR REPLACE(realNm, ' ', '') LIKE CONCAT('%', REPLACE(#{param}, ' ', ''), '%'))
+    </select>
+
+    <select id="getBoxoffice" parameterType="String" resultType="Map">
+        /* MovieMapper.getBoxoffice */
+        SELECT reportDt
+             , ranking
+             , movieCd
+             , movieNm
+             , audience
+             , mainImg
+        FROM tb_daily_boxoffice
+        ORDER BY reportDt DESC, ranking
+        LIMIT 10
+    </select>
+
+    <select id="getMovieInfoDetail" parameterType="String" resultType="MovieVO">
+        /* MovieMapper.getMovieInfoDetail */
+        SELECT X.movieCd
+            , X.movieNm
+            , X.openDt
+            , Y.nationNm AS nations
+            , X.janres
+            , X.showTm
+            , X.content
+            , X.mainImg
+        FROM tb_movie X
+        JOIN tb_movie_nations Y
+        ON X.nations = Y.nationCd
+        WHERE X.movieCd = #{movieCd}
+    </select>
+
+    <select id="listJanres" parameterType="String" resultType="String">
+        /* MovieMapper.listJanres */
+        SELECT X.janreNm AS janres
+        FROM tb_movie_janres X
+        WHERE X.janreCd IN ( ${janres} )
+    </select>
+
+    <select id="listCharacter" parameterType="String" resultType="CharacterVO">
+        /* MovieMapper.listCharacter */
+        SELECT X.movieRoll
+            , X.characterNm
+            , X.realNm
+            , X.characterImg
+        FROM tb_character_roll X
+        WHERE X.movieCd = #{movieCd}
+    </select>
+
+    <select id="getMovieGrade" parameterType="String" resultType="String">
+        /* MovieMapper.getMovieGrade */
+        SELECT ( 0.5*X.grade0_5 + 1*X.grade1 + 1.5*X.grade1_5 + 2*X.grade2 + 2.5*X.grade2_5
+                + 3*X.grade3 + 3.5*X.grade3_5 + 4*X.grade4 + 4.5*X.grade4_5 + 5*X.grade5 ) /
+                ( X.grade0_5 + X.grade1 + X.grade1_5 + X.grade2 + X.grade2_5
+                + X.grade3 + X.grade3_5 + X.grade4 + X.grade4_5 + X.grade5) AS grade
+        FROM tb_grade_report X
+        WHERE X.movieCd = #{movieCd}
+    </select>
+
+    <update id="countUpMovieGradeReport" parameterType="Map">
+        /* MovieMapper.countUpMovieGradeReport */
+        <selectKey keyProperty="cnt" resultType="java.lang.Integer" order="BEFORE">
+            SELECT ${grade} AS cnt
+            FROM tb_grade_report
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_grade_report
+        SET ${grade} = #{cnt} + 1
+        WHERE movieCd = #{movieCd}
+    </update>
+
+    <update id="countDownMovieGradeReport" parameterType="Map">
+        /* MovieMapper.countDownMovieGradeReport */
+        <selectKey keyProperty="cnt" resultType="java.lang.Integer" order="BEFORE">
+            SELECT ${grade} AS cnt
+            FROM tb_grade_report
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_grade_report
+        SET ${grade} = #{cnt} - 1
+        WHERE movieCd = #{movieCd}
+    </update>
 </mapper>

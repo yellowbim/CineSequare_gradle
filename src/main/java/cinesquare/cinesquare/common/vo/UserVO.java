@@ -9,7 +9,7 @@ public class UserVO {
     private String apiToken;
     private String account;
     private String password;
-    private String name;
+    private String userName;
     private int showWatchTime;
 
 }

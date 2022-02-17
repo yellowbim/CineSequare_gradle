@@ -10,6 +10,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class MailServiceImpl implements MailService {
@@ -18,8 +20,9 @@ public class MailServiceImpl implements MailService {
     private JavaMailSender javaMailSender;
 
     @Override
-    public String sendMail(MailVO mail) {
-        String rtnText = "";
+    public String setMailInfo(MailVO mail) {
+        Map<String, String> rtnMap = new HashMap<>();
+        String result = "";
 
         try {
             // 이메일 객체, createMimeMessage() : MimeMessage객체를 생성시킴 (이거로 메시지를 구성한 뒤 메일 발송)
@@ -36,28 +39,37 @@ public class MailServiceImpl implements MailService {
             // 메일 보내기
             javaMailSender.send(msg);
 
-            rtnText = "success";
+            result = "success";
         } catch (Exception e) {
-            rtnText = "fail";
+            result = "fail";
             System.out.println("ERROR : " + e.getMessage());
         }
-        return rtnText;
+
+        return result;
     }
 
     @Override
-    public MailVO makeAuthNumMail(UserVO param) {
+    public String makeAuthNumMail(UserVO param, String authNum) {
         MailVO mail = new MailVO();
 
-        int authNum = (int) (Math.random() * (999999 - 100000 + 1)) + 100000;
         String content = "[CINESQUARE]\n"
-                + "\n" + param.getName() + "님, 반갑습니다."
+                + "\n반갑습니다."
                 + "\nCINESQUARE 계정 생성을 위한 인증번호는 " + authNum + " 입니다.";
 
         mail.setTitle("[CINESQUARE] 계정생성 인증번호");
         mail.setContent(content);
         mail.setRecieverMail(param.getAccount());
 
-        return mail;
+        String rtnMsg = setMailInfo(mail);
+
+        return rtnMsg;
+    }
+
+    @Override
+    public String makeRandomNum() {
+        String randomNum = String.valueOf((int) (Math.random() * (999999 - 100000 + 1)) + 100000);
+
+        return randomNum;
     }
 
     // 이미지 삽입

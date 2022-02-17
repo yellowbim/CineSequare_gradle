@@ -14,29 +14,231 @@
                         ELSE CONCAT('cineuser-', NEXTVAL(tb_user_seq))
                         END ) AS cineToken
         </selectKey>
-        <if test="cineToken != null and !cineToken.equals( 'can_not_insert' )">
+        <if test="cineToken != null and !cineToken.equals( 'can_not_insert' ) or apiToken != null and !apiToken.equals('')">
             INSERT INTO tb_user
-            VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{name}, 0)
+            VALUES (#{cineToken}, #{apiToken}, #{account}, #{password}, #{userName}, 0)
         </if>
     </insert>
 
-    <select id="validAccount" parameterType="String" resultType="int">
-        /* UserMapper.validAccount */
+    <select id="validSignup" parameterType="String" resultType="int">
+        /* UserMapper.validSignup */
         SELECT COUNT(cineToken)
         FROM tb_user
         WHERE account = #{param}
     </select>
 
-    <select id="getUser" parameterType="UserVO" resultType="UserVO">
-        /* UserMapper.getUser */
+    <select id="getUserInfo" parameterType="UserVO" resultType="UserVO">
+        /* UserMapper.getUserInfo */
         SELECT cineToken
-            , apiToken
-            , account
-            , password
-            , name
-            , totalWatchTime
+             , apiToken
+             , account
+             , password
+             , userName
+             , totalWatchTime
         FROM tb_user
+        WHERE (account = #{account} AND password = #{password})
+           OR cineToken = #{cineToken}
+    </select>
+
+    <update id="updateUserInfo" parameterType="UserVO">
+        /* UserMapper.updateUserInfo */
+        UPDATE tb_user
+        SET userName = #{userName}
+        WHERE (account = #{account} AND password = #{password})
+           OR cineToken = #{cineToken}
+    </update>
+
+    <select id="checkMovieGrade" parameterType="GradeReviewVO" resultType="String">
+        /* UserMapper.checkMovieGrade */
+        SELECT grade
+        FROM tb_movie_grade X
+        JOIN tb_user Y
+        ON X.account = Y.account
+        WHERE X.movieCd = #{movieCd}
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Y.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Y.account = #{account} AND Y.password = #{password}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="checkTotalWatchTime" parameterType="GradeReviewVO" resultType="int">
+        /* UserMapper.checkTotalWatchTime */
+        SELECT totalWatchTime
+        FROM tb_user
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND account = #{account} AND password = #{password}
+            </otherwise>
+        </choose>
+    </select>
+
+    <insert id="insertUserMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.insertUserMovieGrade */
+        INSERT INTO tb_movie_grade
+        VALUES ( #{account}, #{movieCd}, #{grade} )
+    </insert>
+
+    <update id="updateUserMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.updateUserMovieGrade */
+        UPDATE tb_movie_grade
+        SET grade = #{grade}
         WHERE account = #{account}
-        AND password = #{password}
+        AND movieCd = #{movieCd}
+    </update>
+
+    <delete id="deleteUserMovieGrade" parameterType="GradeReviewVO">
+        /* UserMapper.deleteUserMovieGrade */
+        DELETE FROM tb_movie_grade
+        WHERE account = #{account}
+        AND movieCd = #{movieCd}
+    </delete>
+
+    <update id="countUpWatchTime" parameterType="GradeReviewVO">
+        /* UserMapper.countUpWatchTime */
+        <selectKey keyProperty="showTm" resultType="java.lang.Integer" order="BEFORE">
+            SELECT showTm
+            FROM tb_movie
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_user
+        SET totalWatchTime = #{totalWatchTime} + #{showTm}
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND account = #{account} AND password = #{password}
+            </otherwise>
+        </choose>
+    </update>
+
+    <update id="countDownWatchTime" parameterType="GradeReviewVO">
+        /* UserMapper.countDownWatchTime */
+        <selectKey keyProperty="showTm" resultType="java.lang.Integer" order="BEFORE">
+            SELECT showTm
+            FROM tb_movie
+            WHERE movieCd = #{movieCd}
+        </selectKey>
+        UPDATE tb_user
+        SET totalWatchTime = #{totalWatchTime} - #{showTm}
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND account = #{account} AND password = #{password}
+            </otherwise>
+        </choose>
+    </update>
+
+    <select id="listGradeList" parameterType="UserVO" resultType="Map">
+        /* UserMapper.listGradeList */
+        SELECT grade, count(grade) AS count
+        FROM tb_movie_grade X
+        INNER JOIN tb_user Y
+                ON X.account = Y.account
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and cineToken != ''">
+                AND Y.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Y.account = #{account}
+            </otherwise>
+        </choose>
+        GROUP BY grade
+    </select>
+
+    <select id="getGradeAndReview" parameterType="GradeReviewVO" resultType="GradeReviewVO">
+        /* UserMapper.getGradeAndReview */
+        SELECT
+            AA.account
+            , AA.movieCd
+            , IF( EXISTS (
+                    SELECT *
+                    FROM tb_movie_grade A
+                    INNER JOIN tb_user B
+                            ON A.account = B.account
+                    WHERE A.movieCd = #{movieCd}
+                            <choose>
+                                <when test="cineToken != null and cineToken != ''">
+                                    AND B.cineToken= #{cineToken}
+                                </when>
+                                <otherwise>
+                                    AND B.account= #{account}
+                                </otherwise>
+                            </choose>
+                    ) = 1, BB.grade, 0) AS grade
+            , '' AS review
+            , AA.movieNm
+        FROM (
+                SELECT
+                X.account
+                , Y.movieCd AS movieCd
+                , '' AS review
+                , Y.movieNm
+                FROM tb_user X, tb_movie Y
+                WHERE Y.movieCd  = #{movieCd}
+                <choose>
+                    <when test="cineToken != null and cineToken != ''">
+                        AND X.cineToken = #{cineToken}
+                    </when>
+                    <otherwise>
+                        AND X.account = #{account}
+                    </otherwise>
+                </choose>
+            ) AA
+        LEFT OUTER JOIN tb_movie_grade BB
+                    ON AA.account = BB.account
+                    AND AA.movieCd = BB.movieCd
+        ;
+    </select>
+
+    <select id="listUserMovieGrade" parameterType="GradeReviewVO" resultType="GradeReviewVO">
+        /* UserMapper.listUserMovieGrade */
+        SELECT X.grade, Y.movieCd, Y.movieNm
+        FROM tb_movie_grade X
+        JOIN tb_movie Y
+        ON X.movieCd = Y.movieCd
+        JOIN tb_user Z
+        ON X.account = Z.account
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Z.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Z.account = #{account}
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="listUserMovieReview" parameterType="GradeReviewVO" resultType="GradeReviewVO">
+        /* UserMapper.listUserMovieReview */
+        SELECT X.review, Y.movieCd, Y.movieNm
+        FROM tb_movie_review X
+        JOIN tb_movie Y
+        ON X.movieCd = Y.movieCd
+        JOIN tb_user Z
+        ON X.account = Z.account
+        WHERE 1=1
+        <choose>
+            <when test="cineToken != null and !cineToken.equals('')">
+                AND Z.cineToken = #{cineToken}
+            </when>
+            <otherwise>
+                AND Z.account = #{account}
+            </otherwise>
+        </choose>
     </select>
 </mapper>
