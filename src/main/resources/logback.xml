@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="true" scan="true" scanPeriod="30 seconds">
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm s.SSS}] [%yellow(%-5level)] [%cyan(%-45.45logger{15})] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="BSS_FILE_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+        <file>logs/dap-aicc-bss.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/dap-aicc-bss.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxFileSize>10mb</maxFileSize>
+            <maxHistory>14</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="BSS_FILE_LOGGER" level="trace" additivity="false">
+        <appender-ref ref="BSS_FILE_APPENDER" />
+    </logger>
+
+    <timestamp key="bdate" datePattern="yyyyMMdd" />
+
+    <appender name="USER_AUTH_HISTORY_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/user-auth-history.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="USER_AUTH_HISTORY_LOGGER" level="trace" additivity="false">
+        <appender-ref ref="USER_AUTH_HISTORY_APPENDER" />
+    </logger>
+
+    <appender name="USER_ACCESS_LOG_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>logs/user-access-log.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+    </appender>
+
+    <logger name="USER_ACCESS_LOG_LOGGER" level="trace" additivity="false">
+        <appender-ref ref="USER_ACCESS_LOG_APPENDER" />
+    </logger>
+
+    <logger name="org.springframework" level="ERROR" />
+    <logger name="org.mybatis" level="ERROR" />
+    <logger name="org.apache.ibatis" level="ERROR" />
+    <logger name="org.apache.kafka" level="ERROR" />
+    <logger name="org.hibernate" level="ERROR" />
+    <logger name="com.zaxxer" level="ERROR" />
+    <logger name="springfox" level="ERROR" />
+
+    <logger name="com.lgcns.dap.aicc" level="DEBUG" />
+
+    <logger name="jdbc" level="OFF" />
+    <logger name="jdbc.sqlonly" level="OFF" />
+    <logger name="jdbc.sqltiming" level="DEBUG" />
+    <logger name="jdbc.audit" level="OFF" />
+    <logger name="jdbc.resultset" level="OFF" />
+    <logger name="jdbc.resultsettable" level="DEBUG" />
+    <logger name="jdbc.connection" level="OFF" />
+
+    <root>
+        <level value="DEBUG"/>
+        <appender-ref ref="console"/>
+    </root>
+</configuration>

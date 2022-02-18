@@ -51,6 +51,7 @@ dependencies {
     // log4
 //    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4:1.16'
+    implementation "ch.qos.logback:logback-classic:1.2.3"
 
     // GSON
     implementation 'com.google.code.gson:gson:2.8.5'
