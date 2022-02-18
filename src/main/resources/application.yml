@@ -16,7 +16,7 @@ spring:
     default:
       encoding: UTF-8
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: Ysoomin12@gmail.com
     password: advfcdrfpknswgdy
     properties:
