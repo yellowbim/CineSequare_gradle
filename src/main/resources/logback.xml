@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true" scan="true" scanPeriod="30 seconds">
+<configuration debug="true" scan="true"	scanPeriod="30 seconds">
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/log/cine-square.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/log/cine-square.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <maxHistory>14</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm s.SSS}] [%-5level] [%-13.13thread] [%logger] - %msg%n</pattern>
+        </encoder>
+    </appender>
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%d{yyyy-MM-dd HH:mm s.SSS}] [%yellow(%-5level)] [%cyan(%-45.45logger{15})] - %msg%n</pattern>
@@ -10,9 +23,9 @@
         <encoder>
             <pattern>%msg%n</pattern>
         </encoder>
-        <file>logs/dap-aicc-bss.log</file>
+        <file>/log/cine-square-bss.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>logs/dap-aicc-bss.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
+            <fileNamePattern>/log/cine-square-bss.log.%d{yyyy-MM-dd}.%i</fileNamePattern>
             <maxFileSize>10mb</maxFileSize>
             <maxHistory>14</maxHistory>
         </rollingPolicy>
@@ -22,8 +35,6 @@
         <appender-ref ref="BSS_FILE_APPENDER" />
     </logger>
 
-    <timestamp key="bdate" datePattern="yyyyMMdd" />
-
     <appender name="USER_AUTH_HISTORY_APPENDER" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <encoder>
             <pattern>%msg%n</pattern>
@@ -31,7 +42,7 @@
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>logs/user-auth-history.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>/log/aicc/user-auth-history.log.%d{yyyy-MM-dd}</fileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -48,7 +59,7 @@
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- daily rollover -->
-            <fileNamePattern>logs/user-access-log.log.%d{yyyy-MM-dd}</fileNamePattern>
+            <fileNamePattern>/log/aicc/user-access-log.log.%d{yyyy-MM-dd}</fileNamePattern>
             <!-- keep 30 days' worth of history -->
             <maxHistory>30</maxHistory>
         </rollingPolicy>
@@ -66,18 +77,19 @@
     <logger name="com.zaxxer" level="ERROR" />
     <logger name="springfox" level="ERROR" />
 
-    <logger name="com.lgcns.dap.aicc" level="DEBUG" />
+    <logger name="com.lgcns.dap.aicc" level="TRACE" />
 
+    <logger name="log4jdbc.log4j2" level="ERROR" />
     <logger name="jdbc" level="OFF" />
     <logger name="jdbc.sqlonly" level="OFF" />
     <logger name="jdbc.sqltiming" level="DEBUG" />
-    <logger name="jdbc.audit" level="OFF" />
+    <logger name="jdbc.audit" level="DEBUG" />
     <logger name="jdbc.resultset" level="OFF" />
-    <logger name="jdbc.resultsettable" level="DEBUG" />
+    <logger name="jdbc.resultsettable" level="OFF" />
     <logger name="jdbc.connection" level="OFF" />
 
     <root>
-        <level value="DEBUG"/>
-        <appender-ref ref="console"/>
+        <level value="INFO"/>
+        <appender-ref ref="file"/>
     </root>
 </configuration>

@@ -30,6 +30,7 @@ spring:
 server:
   port: 9096
 
+# 로컬 환경에서만 설정
 #logging:
 #  config: classpath:log4j2.yml
 #  level:
