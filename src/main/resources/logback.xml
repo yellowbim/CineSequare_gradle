@@ -69,24 +69,24 @@
         <appender-ref ref="USER_ACCESS_LOG_APPENDER" />
     </logger>
 
-    <logger name="org.springframework" level="ERROR" />
-    <logger name="org.mybatis" level="ERROR" />
-    <logger name="org.apache.ibatis" level="ERROR" />
-    <logger name="org.apache.kafka" level="ERROR" />
-    <logger name="org.hibernate" level="ERROR" />
-    <logger name="com.zaxxer" level="ERROR" />
-    <logger name="springfox" level="ERROR" />
+    <logger name="org.springframework" level="INFO" />
+    <logger name="org.mybatis" level="INFO" />
+    <logger name="org.apache.ibatis" level="INFO" />
+    <logger name="org.apache.kafka" level="INFO" />
+    <logger name="org.hibernate" level="INFO" />
+    <logger name="com.zaxxer" level="INFO" />
+    <logger name="springfox" level="INFO" />
 
-    <logger name="com.lgcns.dap.aicc" level="TRACE" />
+    <logger name="cinesquare.cinesquare" level="INFO" />
 
-    <logger name="log4jdbc.log4j2" level="ERROR" />
-    <logger name="jdbc" level="OFF" />
+    <logger name="log4jdbc.log4j2" level="INFO" />
+    <logger name="jdbc" level="ON" />
     <logger name="jdbc.sqlonly" level="OFF" />
-    <logger name="jdbc.sqltiming" level="DEBUG" />
-    <logger name="jdbc.audit" level="DEBUG" />
-    <logger name="jdbc.resultset" level="OFF" />
-    <logger name="jdbc.resultsettable" level="OFF" />
-    <logger name="jdbc.connection" level="OFF" />
+    <logger name="jdbc.sqltiming" level="INFO" />
+    <logger name="jdbc.audit" level="INFO" />
+    <logger name="jdbc.resultset" level="INFO" />
+    <logger name="jdbc.resultsettable" level="INFO" />
+    <logger name="jdbc.connection" level="INFO" />
 
     <root>
         <level value="INFO"/>
