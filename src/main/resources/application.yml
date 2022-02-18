@@ -12,10 +12,6 @@ spring:
     # mylocal
 #      jdbc-url: jdbc:log4jdbc:mysql://54.180.29.206:3306/cine_square?characterEncoding=utf8&serverTimezone=UTC
 
-
-  #logging:
-  #  config: classpath:log4j2.yml
-
   mail:
     default:
       encoding: UTF-8
@@ -33,6 +29,9 @@ spring:
 
 server:
   port: 9096
+
+logging:
+  config: classpath:log4j2.yml
 
 # MyBatis Configuration
 mybatis:
