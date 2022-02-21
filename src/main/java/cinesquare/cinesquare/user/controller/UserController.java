@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000", "http://cinesquare.yahmedora.com:9096"})
 @RequestMapping("/user")
 public class UserController {
 
