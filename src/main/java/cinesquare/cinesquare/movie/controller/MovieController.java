@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://cinesquare.yahmedora.com:9096"})
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/movie")
 public class MovieController {
 
