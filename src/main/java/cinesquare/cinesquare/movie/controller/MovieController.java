@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://cinesquare.yahmedora.com:8088", "http://54.180.29.206:8088", "https://graceful-starburst-2727fb.netlify.app"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://cinesquare.yahmedora.com:8088", "http://54.180.29.206:8088", "https://graceful-starburst-2727fb.netlify.app", "http://cinesquare.slowtuttle.co.kr:8088"})
 @RequestMapping("/movie")
 public class MovieController {
 
