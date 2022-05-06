@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.apache.logging.log4j.util.Strings.isEmpty;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "http://cinesquare.yahmedora.com:8088", "http://54.180.29.206:8088", "https://graceful-starburst-2727fb.netlify.app", "https://cinesquare.slowtuttle.co.kr:8088", "http://cinesquare.slowtuttle.co.kr:8088"})
+@CrossOrigin(origins = {"http://localhost:3000", "http://cinesquare.yahmedora.com:8088", "http://54.180.29.206:8088", "https://graceful-starburst-2727fb.netlify.app", "https://cinesquare.netlify.app", "https://cinesquare.slowtuttle.co.kr:8088", "http://cinesquare.slowtuttle.co.kr:8088"})
 @RequestMapping("/user")
 public class UserController {
 
